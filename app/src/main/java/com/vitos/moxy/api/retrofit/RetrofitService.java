@@ -6,6 +6,7 @@ import com.vitos.moxy.BuildConfig;
 import com.vitos.moxy.mvp.models.UserDTO;
 import com.vitos.moxy.tools.DateHelper;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MultipartBody;
@@ -48,6 +49,11 @@ public class RetrofitService implements IRetrofitService {
     @Override
     public Observable<UserDTO> getUser(String id) {
         return mCaller.getUser(id);
+    }
+
+    @Override
+    public Observable<List<UserDTO>> getAllUsers() {
+        return mCaller.getAllUsers();
     }
 
     @Override

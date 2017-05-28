@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 
 import com.vitos.moxy.mvp.models.User;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -15,6 +17,8 @@ public interface IUserRepository {
     Observable<Void> updateUser(User user);
 
     Observable<User> getUser(String id);
+
+    Observable<List<User>> getAllUsers();
 
     Observable<Void> postImage(String id, Bitmap bitmap);
 }

@@ -9,6 +9,8 @@ import com.vitos.moxy.mvp.models.repo.IUserRepository;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -45,6 +47,12 @@ public class Api {
     public Observable<User> getUser(String id){
         final IUserRepository repository = mRepositoryFactory.getUserRepository();
         return repository.getUser(id);
+        //     return Observable.defer(() -> repository.getUser(id));
+    }
+
+    public Observable<List<User>> getAllUsers(){
+        final IUserRepository repository = mRepositoryFactory.getUserRepository();
+        return repository.getAllUsers();
         //     return Observable.defer(() -> repository.getUser(id));
     }
 

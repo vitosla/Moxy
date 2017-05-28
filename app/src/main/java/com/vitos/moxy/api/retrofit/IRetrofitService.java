@@ -2,6 +2,8 @@ package com.vitos.moxy.api.retrofit;
 
 import com.vitos.moxy.mvp.models.UserDTO;
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -24,6 +26,9 @@ public interface IRetrofitService {
 
     @GET("/api/users/{id}")
     Observable<UserDTO> getUser(@Path("id") String id);
+
+    @GET("/api/users")
+    Observable<List<UserDTO>> getAllUsers();
 
     @Multipart
     @POST("/api/users/{id}/image")

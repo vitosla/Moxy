@@ -10,6 +10,7 @@ import com.vitos.moxy.mvp.models.UserMapper;
 import com.vitos.moxy.tools.ImageUtils;
 
 import java.io.File;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,6 +41,13 @@ public class RemoteUserRepository implements IUserRepository{
         return mRetrofitService
                 .getUser(id)
                 .map(userDTO -> new UserMapper().map(userDTO));
+    }
+
+    @Override
+    public Observable<List<User>> getAllUsers() {
+        return mRetrofitService
+                .getAllUsers()
+                .map(userDTO -> new UserMapper().call(userDTO));
     }
 
     @Override
