@@ -10,10 +10,13 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpDelegate;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.PresenterType;
+import com.squareup.picasso.Picasso;
+import com.vitos.moxy.MoxyApp;
 import com.vitos.moxy.R;
 import com.vitos.moxy.mvp.models.User;
 import com.vitos.moxy.mvp.presenters.UserListPresenter;
 import com.vitos.moxy.mvp.views.IUserListView;
+import com.vitos.moxy.tools.CircleTransform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +29,19 @@ import javax.inject.Inject;
 
 public class UserListAdapter extends MvpBaseAdapter implements IUserListView{
 
-    @Inject Context mAppContext;
+    public static final int REPOSITORY_VIEW_TYPE = 0;
+    private static final int PROGRESS_VIEW_TYPE = 1;
+
+    Context mAppContext;
 
     @InjectPresenter(type = PresenterType.WEAK, tag = UserListPresenter.TAG )
     UserListPresenter mUserListPresenter;
 
     List<User> mUsers;
 
-    public UserListAdapter(MvpDelegate<?> parentDelegate, String childId) {
-        super(parentDelegate, childId);
+    public UserListAdapter(MvpDelegate<?> parentDelegate, OnScrollToBottomListener scrollToBottomListener) {
+        super(parentDelegate, String.valueOf(0));
+        mAppContext = MoxyApp.getAppComponent().getContext();
         mUsers = new ArrayList<>();
         mUserListPresenter.loadUsersData();
     }
@@ -55,6 +62,11 @@ public class UserListAdapter extends MvpBaseAdapter implements IUserListView{
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position == mUsers.size() ? PROGRESS_VIEW_TYPE : REPOSITORY_VIEW_TYPE;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null){
@@ -67,7 +79,17 @@ public class UserListAdapter extends MvpBaseAdapter implements IUserListView{
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.mName.setText(getItem(position).getId());
+        Picasso.with(mAppContext)
+                .load(getItem(position).getThumb())
+                .centerCrop()
+                .transform(new CircleTransform())
+                .error(R.drawable.detect)
+                .fit()
+                .into(viewHolder.mImage);
+
+        viewHolder.mId.setText(getItem(position).getId());
+        viewHolder.mProvider.setText(getItem(position).getProvider());
+        viewHolder.mEmail.setText(getItem(position).getEmail());
 
         return convertView;
     }
@@ -75,22 +97,39 @@ public class UserListAdapter extends MvpBaseAdapter implements IUserListView{
     @Override
     public void onLoadUsersData(List<User> users) {
         mUsers = users;
-
+        notifyDataSetInvalidated();
     }
 
-    static class ViewHolder{
+    public class ViewHolder{
 
         ImageView mImage;
-        TextView mName;
-        TextView mDate;
-        TextView mCompatibility;
+        TextView mId;
+        TextView mProvider;
+        TextView mEmail;
 
         public ViewHolder(View view) {
             mImage = (ImageView) view.findViewById(R.id.iv_image);
-            mName = (TextView) view.findViewById(R.id.tv_item_name);
-            mDate = (TextView) view.findViewById(R.id.tv_item_date);
-            mCompatibility = (TextView) view.findViewById(R.id.tv_item_compatibility);
+            mId = (TextView) view.findViewById(R.id.tv_id);
+            mProvider = (TextView) view.findViewById(R.id.tv_provider);
+            mEmail = (TextView) view.findViewById(R.id.tv_email);
         }
+
+//        MvpDelegate getMvpDelegate() {
+//            if (mRepository == null) {
+//                return null;
+//            }
+//
+//            if (mMvpDelegate == null) {
+//                mMvpDelegate = new MvpDelegate<>(this);
+//                mMvpDelegate.setParentDelegate(UserListAdapter.this.getMvpDelegate(), String.valueOf(mRepository.getId()));
+//
+//            }
+//            return mMvpDelegate;
+//        }
+    }
+
+    public interface OnScrollToBottomListener {
+        void onScrollToBottom();
     }
 
 }

@@ -3,6 +3,7 @@ package com.vitos.moxy.mvp.models.repo;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.vitos.moxy.MoxyApp;
 import com.vitos.moxy.api.retrofit.RetrofitService;
 import com.vitos.moxy.mvp.models.User;
 import com.vitos.moxy.mvp.models.UserDTO;
@@ -25,10 +26,13 @@ import rx.Observable;
 
 public class RemoteUserRepository implements IUserRepository{
 
-    @Inject
     RetrofitService mRetrofitService;
-    @Inject
     Context mAppContext;
+
+    public RemoteUserRepository() {
+        mRetrofitService = MoxyApp.getAppComponent().getRetrofitService();
+        mAppContext = MoxyApp.getAppComponent().getContext();
+    }
 
     @Override
     public Observable<Void> updateUser(User user) {

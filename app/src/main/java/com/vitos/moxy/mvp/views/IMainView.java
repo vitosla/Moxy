@@ -14,5 +14,5 @@ import java.util.List;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface IMainView extends MvpView {
 
-
+    void onMoxyItemClick();
 }
