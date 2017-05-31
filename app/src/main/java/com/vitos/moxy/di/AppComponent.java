@@ -7,6 +7,7 @@ import com.vitos.moxy.api.retrofit.RetrofitService;
 import com.vitos.moxy.di.Modules.ApiModule;
 import com.vitos.moxy.di.Modules.ContextModule;
 import com.vitos.moxy.di.Modules.RetrofitModule;
+import com.vitos.moxy.mvp.models.repo.RemoteUserRepository;
 import com.vitos.moxy.mvp.presenters.MoxyPresenter;
 import com.vitos.moxy.mvp.presenters.UserListPresenter;
 
@@ -28,4 +29,5 @@ public interface AppComponent {
 
     void inject (MoxyPresenter moxyPresenter);
     void inject (UserListPresenter userListPresenter);
+    void inject (RemoteUserRepository remoteUserRepository);
 }

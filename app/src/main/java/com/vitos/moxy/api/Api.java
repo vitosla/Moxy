@@ -36,9 +36,9 @@ public class Api {
                 .add(repository.updateUser(user)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BaseResultSubscriber<Void>(){
+                        .subscribe(new BaseResultSubscriber<Void>() {
                             @Override
-                            public void postSuccessful(Void data) {
+                            public void onSuccessful(Void data) {
                                 EventBus.getDefault().post(new SuccessfulUserUpdateEvent(user));
                             }
                         }));

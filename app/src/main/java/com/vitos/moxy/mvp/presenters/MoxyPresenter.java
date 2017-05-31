@@ -22,14 +22,9 @@ public class MoxyPresenter extends MvpPresenter<IMainView>{
 
     public MoxyPresenter() {
         MoxyApp.getAppComponent().inject(this);
-        getViewState().onMoxyItemClick();
     }
 
-    public void empty(){
-
-    }
-
-    public void onMoxyItemClick() {
-        getViewState().onMoxyItemClick();
+    public void showItemDetails(String id) {
+        //TODO
     }
 }

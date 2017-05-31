@@ -14,7 +14,9 @@ import com.squareup.picasso.Picasso;
 import com.vitos.moxy.MoxyApp;
 import com.vitos.moxy.R;
 import com.vitos.moxy.mvp.models.User;
+import com.vitos.moxy.mvp.presenters.MoxyPresenter;
 import com.vitos.moxy.mvp.presenters.UserListPresenter;
+import com.vitos.moxy.mvp.views.IMainView;
 import com.vitos.moxy.mvp.views.IUserListView;
 import com.vitos.moxy.tools.CircleTransform;
 
@@ -29,21 +31,29 @@ import javax.inject.Inject;
 
 public class UserListAdapter extends MvpBaseAdapter implements IUserListView{
 
-    public static final int REPOSITORY_VIEW_TYPE = 0;
+    private static final int REPOSITORY_VIEW_TYPE = 0;
     private static final int PROGRESS_VIEW_TYPE = 1;
 
-    Context mAppContext;
+    private Context mAppContext;
+    private IMainView mListener;
+
+    @Inject
+    MoxyPresenter mMoxyPresenter;
 
     @InjectPresenter(type = PresenterType.WEAK, tag = UserListPresenter.TAG )
     UserListPresenter mUserListPresenter;
 
-    List<User> mUsers;
+    private List<User> mUsers;
 
-    public UserListAdapter(MvpDelegate<?> parentDelegate, OnScrollToBottomListener scrollToBottomListener) {
+    public UserListAdapter(MvpDelegate<?> parentDelegate) {
         super(parentDelegate, String.valueOf(0));
         mAppContext = MoxyApp.getAppComponent().getContext();
         mUsers = new ArrayList<>();
         mUserListPresenter.loadUsersData();
+    }
+
+    public void setOnListItemClickListener(IMainView listener){
+        mListener = listener;
     }
 
     @Override
@@ -91,6 +101,8 @@ public class UserListAdapter extends MvpBaseAdapter implements IUserListView{
         viewHolder.mProvider.setText(getItem(position).getProvider());
         viewHolder.mEmail.setText(getItem(position).getEmail());
 
+        convertView.setOnClickListener(v -> mListener.onListItemClick(getItem(position).getId()));
+
         return convertView;
     }
 
@@ -100,36 +112,17 @@ public class UserListAdapter extends MvpBaseAdapter implements IUserListView{
         notifyDataSetInvalidated();
     }
 
-    public class ViewHolder{
-
+    private class ViewHolder{
         ImageView mImage;
         TextView mId;
         TextView mProvider;
         TextView mEmail;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             mImage = (ImageView) view.findViewById(R.id.iv_image);
             mId = (TextView) view.findViewById(R.id.tv_id);
             mProvider = (TextView) view.findViewById(R.id.tv_provider);
             mEmail = (TextView) view.findViewById(R.id.tv_email);
         }
-
-//        MvpDelegate getMvpDelegate() {
-//            if (mRepository == null) {
-//                return null;
-//            }
-//
-//            if (mMvpDelegate == null) {
-//                mMvpDelegate = new MvpDelegate<>(this);
-//                mMvpDelegate.setParentDelegate(UserListAdapter.this.getMvpDelegate(), String.valueOf(mRepository.getId()));
-//
-//            }
-//            return mMvpDelegate;
-//        }
     }
-
-    public interface OnScrollToBottomListener {
-        void onScrollToBottom();
-    }
-
 }

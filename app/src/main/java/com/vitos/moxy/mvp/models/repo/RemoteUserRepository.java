@@ -26,12 +26,13 @@ import rx.Observable;
 
 public class RemoteUserRepository implements IUserRepository{
 
+    @Inject
     RetrofitService mRetrofitService;
+    @Inject
     Context mAppContext;
 
     public RemoteUserRepository() {
-        mRetrofitService = MoxyApp.getAppComponent().getRetrofitService();
-        mAppContext = MoxyApp.getAppComponent().getContext();
+        MoxyApp.getAppComponent().inject(this);
     }
 
     @Override

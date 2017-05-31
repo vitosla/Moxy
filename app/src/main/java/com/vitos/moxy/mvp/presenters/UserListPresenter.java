@@ -3,6 +3,8 @@ package com.vitos.moxy.mvp.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.vitos.moxy.MoxyApp;
 import com.vitos.moxy.api.Api;
+import com.vitos.moxy.api.BaseResultSubscriber;
+import com.vitos.moxy.api.BaseResultSubscriber_MembersInjector;
 import com.vitos.moxy.api.repo.RepositoryFactory;
 import com.vitos.moxy.api.retrofit.RetrofitService;
 import com.vitos.moxy.mvp.models.User;
@@ -30,9 +32,6 @@ public class UserListPresenter extends BasePresenter<IUserListView>{
     @Inject
     Api mApi;
 
-    @Inject
-    RetrofitService mRetrofitService;
-
     public UserListPresenter() {
         MoxyApp.getAppComponent().inject(this);
     }
@@ -42,21 +41,10 @@ public class UserListPresenter extends BasePresenter<IUserListView>{
         Subscription subscription = mApi.getAllUsers()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<User>>() {
+                .subscribe(new BaseResultSubscriber<List<User>>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        int uu=0;
-                        uu++;
-                    }
-
-                    @Override
-                    public void onNext(List<User> users) {
-                        getViewState().onLoadUsersData(users);
+                    public void onSuccessful(List<User> data) {
+                        getViewState().onLoadUsersData(data);
                     }
                 });
         unsubscribeOnDestroy(subscription);

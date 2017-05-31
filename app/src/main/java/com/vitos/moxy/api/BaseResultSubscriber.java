@@ -21,7 +21,7 @@ import rx.Subscriber;
  * Created by Victor on 28.05.2017.
  */
 
-abstract class BaseResultSubscriber<T> extends Subscriber<T> {
+public abstract class BaseResultSubscriber<T> extends Subscriber<T> {
 
     @Inject Context mAppContext;
 
@@ -54,9 +54,9 @@ abstract class BaseResultSubscriber<T> extends Subscriber<T> {
 
     @Override
     public void onNext(T data) {
-        postSuccessful(data);
+        onSuccessful(data);
     }
 
 
-    public abstract void postSuccessful(T data);
+    public abstract void onSuccessful(T data);
 }
